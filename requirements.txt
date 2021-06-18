@@ -10,7 +10,7 @@ idna
 itsdangerous
 Jinja2
 MarkupSafe
-pretty-html-tabl
+
 python-dateutil
 pytz
 requests
