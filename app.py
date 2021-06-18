@@ -121,7 +121,7 @@ def home():
 
         url = baseURL
         try:
-            r = Request(url, headers={'User-Agent': 'Mozilla/5.0(compatible; Googlebot/2.1;+http://www.google.com/bot.html)'})
+            r = Request(url, headers={'User-Agent':'Mozilla/7.0(compatible; Googlebot/3.1;+http://www.google.com/bot.html)'})
             web_url = urllib.request.urlopen(r)
             d = web_url.read().decode('utf-8', 'ignore')
             d = str(d)
