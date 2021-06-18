@@ -123,8 +123,22 @@ def home():
 
         url = baseURL
         try:
-            p=[]
-            r = Request(url, headers={'User-Agent':'Mozilla/7.0(compatible; Googlebot/2.1;+http://www.google.com/bot.html)'})
+            user_agent_list = [
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15',
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/77.0',
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:77.0) Gecko/20100101 Firefox/77.0',
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
+                'Mozilla/5.0 (compatible; Googlebot/2.1;+http://www.google.com/bot.html)'
+            ]
+
+
+            # Pick a random user agent
+            user_agent = random.choice(user_agent_list)
+
+            # Set the headers
+            head = {'User-Agent':user_agent}
+            r = Request(url,headers=head)
             web_url = urllib.request.urlopen(r)
             d = web_url.read().decode('utf-8', 'ignore')
             d = str(d)
