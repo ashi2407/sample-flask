@@ -108,7 +108,7 @@ def home():
                 pg='1'
             global baseURL
             if 'amazon' in id:
-                baseURL = 'http://www.'+id+'/s?k='+sr+'&page='+pg
+                baseURL = 'https://www.'+id+'/s?k='+sr+'&page='+pg
             elif 'ebay' in id:
                 baseURL = 'https://www.'+id+'/sch/i.html?_nkw='+sr+'&page='+pg
 
