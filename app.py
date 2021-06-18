@@ -180,7 +180,7 @@ def home():
             user_agent = random.choice(user_agent_list)
 
             # Set the headers
-            head = {'User-Agent':user_agent}
+            head =user_agent
             r = Request(url,headers=head)
             web_url = urllib.request.urlopen(r)
             d = web_url.read().decode('utf-8', 'ignore')
