@@ -112,7 +112,7 @@ def home():
             elif 'ebay' in id:
                 baseURL = 'https://www.'+id+'/sch/i.html?_nkw='+sr+'&page='+pg
 
-        else:f
+        else:
             return "Error: No id field provided. Please specify an id."
             # Create an empty list for our results
 
