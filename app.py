@@ -104,6 +104,8 @@ def home():
                 pg=str(request.args['search'])
                 if int(pg)<0:
                     pg='1'
+                else:
+                    pass
             except:
                 pg='1'
             global baseURL
@@ -121,13 +123,15 @@ def home():
 
         url = baseURL
         try:
-            r = Request(url, headers={'User-Agent':'Mozilla/7.0(compatible; Googlebot/3.1;+http://www.google.com/bot.html)'})
+            p=[]
+            r = Request(url, headers={'User-Agent':'Mozilla/7.0(compatible; Googlebot/2.1;+http://www.google.com/bot.html)'})
             web_url = urllib.request.urlopen(r)
             d = web_url.read().decode('utf-8', 'ignore')
             d = str(d)
             soup=BeautifulSoup(d,'html.parser')
         except Exception as es:
-            return str(es)
+            return str(es)+str(url)
+                               
 
 
 
