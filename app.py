@@ -57,37 +57,45 @@ def amaze(url):
 
 
 def ebayed(url):
-    r = Request(url, headers={'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1;+http://www.google.com/bot.html)'})
-    web_url = urllib.request.urlopen(r)
-    d = web_url.read().decode('utf-8', 'ignore')
-    d = str(d)
-    soup = BeautifulSoup(d, 'html.parser')
-    listu1=[]
-    bloggy=soup.find_all('div', attrs={'class': 's-item__wrapper clearfix'})
-    for x in bloggy:
-        try:
-            name = x.find_all('h3', attrs={'class': 's-item__title'})
-        except:
-            name[0] = ''
+    try:
+        r = Request(url,
+                    headers={'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1;+http://www.google.com/bot.html)'})
+        web_url = urllib.request.urlopen(r)
+        d = web_url.read().decode('utf-8', 'ignore')
+        d = str(d)
+        soup = BeautifulSoup(d, 'html.parser')
 
-        try:
-            pri = x.find_all('span', attrs={'class': 's-item__price'})
-            price = pri[0].text
-        except:
-            price = ''
+        listu1 = []
+        bloggy = soup.find_all('div', attrs={'class': 's-item__wrapper clearfix'})
 
-        img = x.find_all('img', attrs={'s-item__image-img'})
-        for c in img:
-            ig=img(c['src'])
-        try:
-            g = {'name': name[0].text, 'price': price, "img":ig, "rate": 'null'}
-            print(g)
-        except:
-            g = {}
+        for x in bloggy:
+            try:
+                name = x.find_all('h3', attrs={'class': 's-item__title'})
+            except:
+                name[0] = ''
 
-        listu1.append(g)
+            try:
+                pri = x.find_all('span', attrs={'class': 's-item__price'})
+                price = pri[0].text
+            except:
+                price = ''
 
-    return listu1
+            try:
+                img = x.find_all('img', attrs={'class': 's-item__image-img'})[0]['src']
+                print(img)
+            except:
+                img = ''
+            try:
+                g = {'name': name[0].text, 'price': price, "img":img, "rate": 'null'}
+                print(g)
+            except:
+                g = {}
+
+            listu1.append(g)
+
+        return listu1
+    except Exception as es:
+        return str(es)
 
 
 def amapi(search):
@@ -157,7 +165,9 @@ def home():
                     return jsonify(ku)
 
         elif 'ebay' in baseURL:
+            print('****************************************************************************************************************************')
             kl=ebayed(url)
+            print(kl)
             return jsonify(kl)
 
         else:
