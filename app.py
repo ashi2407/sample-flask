@@ -2,13 +2,14 @@ from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
 import urllib
 from flask import Flask, render_template, jsonify, request, redirect, url_for
-from html.parser import HTMLParser
 import os
 from flask_cors import CORS, cross_origin
+import json
+
 app = Flask(__name__)
 cors = CORS(app)
-import json
-import random
+
+
 
 # By Deafult Flask will come into this when we run the file
 @app.route('/')
@@ -17,10 +18,14 @@ def index():
 
 
 # After clicking the Submit Button FLASK will come into this
-def amaze(soup):
-
+def amaze(url):
+    r = Request(url, headers={'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1;+http://www.google.com/bot.html)'})
+    web_url = urllib.request.urlopen(r)
+    d = web_url.read().decode('utf-8', 'ignore')
+    d = str(d)
+    soup = BeautifulSoup(d, 'html.parser')
+    listu = []
     bloggy = soup.select('div.s-latency-cf-section')
-    listu=[]
     for x in bloggy:
         try:
             try:
@@ -51,7 +56,12 @@ def amaze(soup):
 
 
 
-def ebayed(soup):
+def ebayed(url):
+    r = Request(url, headers={'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1;+http://www.google.com/bot.html)'})
+    web_url = urllib.request.urlopen(r)
+    d = web_url.read().decode('utf-8', 'ignore')
+    d = str(d)
+    soup = BeautifulSoup(d, 'html.parser')
     listu1=[]
     bloggy=soup.find_all('div', attrs={'class': 's-item__wrapper clearfix'})
     for x in bloggy:
@@ -68,9 +78,9 @@ def ebayed(soup):
 
         img = x.find_all('img', attrs={'s-item__image-img'})
         for c in img:
-            (c['src'])
+            ig=img(c['src'])
         try:
-            g = {'name': name[0].text, 'price': price, "img": c['src'], "rate": 'null'}
+            g = {'name': name[0].text, 'price': price, "img":ig, "rate": 'null'}
             print(g)
         except:
             g = {}
@@ -80,28 +90,35 @@ def ebayed(soup):
     return listu1
 
 
-
-
-
-
+def amapi(search):
+    ku = []
+    url = 'http://api.scraperapi.com/?api_key=06cb789e1afb5ae8df2d0affcd2bfb95&url=https://www.amazon.com/s?k=' + search + '&autoparse=true'
+    req = Request(url, headers={'User-Agent': 'Mozilla/8.0'})
+    json_url = urllib.request.urlopen(req)
+    d = json_url.read()
+    data = json.loads(d)
+    for x in data['results']:
+        di = {}
+        di['name'] = x['name']
+        di['img'] = x['image']
+        di['price'] = x['price_string']
+        di['rate'] = x['stars']
+        ku.append(di)
+    return ku
 
 @app.route('/api/', methods=['GET'])
 @cross_origin()
 def home():
     try:
-        global output_data
-        output_data = []
         if 'web' in request.args:
             id = str(request.args['web'])
-
-
+            id=id.replace(" ",'')
         else:
             return "Error: No id field provided. Please specify an id."
-
         if 'search' in request.args:
             sr = str(request.args['search'])
             try:
-                pg=str(request.args['search'])
+                pg=str(request.args['page'])
                 if int(pg)<0:
                     pg='1'
                 else:
@@ -110,7 +127,7 @@ def home():
                 pg='1'
             global baseURL
             if 'amazon' in id:
-                baseURL = 'https://www.'+id+'/s?k='+sr+'&page='+pg
+                baseURL = 'http://www.'+id+'/s?k='+sr+'&page='+pg
             elif 'ebay' in id:
                 baseURL = 'https://www.'+id+'/sch/i.html?_nkw='+sr+'&page='+pg
 
@@ -122,84 +139,30 @@ def home():
         # IDs are unique, but other fields might return many results
 
         url = baseURL
-        try:
-            user_agent_list = [
-# Firefox 77 Mac
-{
-"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:77.0) Gecko/20100101 Firefox/77.0",
-"Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-"Accept-Language": "en-US,en;q=0.5",
-"Referer": "https://www.google.com/",
-"DNT": "1",
-"Connection": "keep-alive",
-"Upgrade-Insecure-Requests": "1"
-},
-# Firefox 77 Windows
-{
-"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/77.0",
-"Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-"Accept-Language": "en-US,en;q=0.5",
-"Accept-Encoding": "gzip, deflate, br",
-"Referer": "https://www.google.com/",
-"DNT": "1",
-"Connection": "keep-alive",
-"Upgrade-Insecure-Requests": "1"
-},
-# Chrome 83 Mac
-{
-"Connection": "keep-alive",
-"DNT": "1",
-"Upgrade-Insecure-Requests": "1",
-"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36",
-"Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-"Sec-Fetch-Site": "none",
-"Sec-Fetch-Mode": "navigate",
-"Sec-Fetch-Dest": "document",
-"Referer": "https://www.google.com/",
-"Accept-Encoding": "gzip, deflate, br",
-"Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8"
-},
-# Chrome 83 Windows 
-{
-"Connection": "keep-alive",
-"Upgrade-Insecure-Requests": "1",
-"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36",
-"Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-"Sec-Fetch-Site": "same-origin",
-"Sec-Fetch-Mode": "navigate",
-"Sec-Fetch-User": "?1",
-"Sec-Fetch-Dest": "document",
-"Referer": "https://www.google.com/",
-"Accept-Encoding": "gzip, deflate, br",
-"Accept-Language": "en-US,en;q=0.9"
-}
-]
-
-
-            # Pick a random user agent
-            user_agent = random.choice(user_agent_list)
-
-            # Set the headers
-            head =user_agent
-            r = Request(url,headers=head)
-            web_url = urllib.request.urlopen(r)
-            d = web_url.read().decode('utf-8', 'ignore')
-            d = str(d)
-            soup=BeautifulSoup(d,'html.parser')
-        except Exception as es:
-            return str(es)+str(url)
-                               
-
-
-
         if 'amazon' in baseURL:
-            return jsonify(amaze(soup))
+            gh=amaze(url)
+            if len(gh) > 0:
+                return jsonify(gh)
+            else:
+                hg=amapi(sr)
+            if len(hg) > 0:
+                return jsonify(hg)
+            else:
+                ku = [{'name': "null", 'price': "null",
+
+                       "img": "data:image/png;base64,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",
+
+                       "rate": 'null'}]
+
+                return jsonify(ku)
 
         elif 'ebay' in baseURL:
-            return jsonify(ebayed(soup))
+            kl=ebayed(url)
+            return jsonify(kl)
 
         else:
             pass
+
 
 
         #if 'amazon' in baseURL:
@@ -208,28 +171,14 @@ def home():
             #return jsonify(listu1)
 
     except Exception as es:
-        if 'amazon' in baseURL:
-            try:
-                ku = []
-                url = 'http://api.scraperapi.com/?api_key=06cb789e1afb5ae8df2d0affcd2bfb95&url=https://www.amazon.com/s?k=' + sr + '&autoparse=true'
-                req = Request(url, headers={'User-Agent': 'Mozilla/8.0'})
-                json_url = urllib.request.urlopen(req)
-                d = json_url.read()
-                data = json.loads(d)
-                for x in data['results']:
-                    di = {}
-                    di['name'] = x['name']
-                    di['img'] = x['image']
-                    di['price'] = x['price_string']
-                    di['rate'] = x['stars']
-                    ku.append(di)
-            except:
-                ku = [{'name': "null", 'price': "null",
-                       "img": "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pngitem.com%2Fmiddle%2FiJJRbhw_no-profile-picture-available-hd-png-download%2F&psig=AOvVaw3xRSY0MPQM7NlJvyxSb4hC&ust=1624013108180000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCJj-ub2-nvECFQAAAAAdAAAAABAD",
-                       "rate": 'null'}]
-                return jsonify(ku)
-        else:
-            return (str(es))
+        ku = [{'name': "null", 'price': "null",
+
+               "img": "data:image/png;base64,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",
+
+               "rate": 'null'}]
+
+        return jsonify(ku)
+
 
 
 
