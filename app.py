@@ -19,12 +19,11 @@ def index():
 
 # After clicking the Submit Button FLASK will come into this
 def amaze(url,ext):
-    r = Request(url, headers={'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1;+http://www.google.com/bot.html)'})
+    r = Request(url,headers={'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1;+http://www.google.com/bot.html)'})
     web_url = urllib.request.urlopen(r)
-    d = web_url.read().decode('utf-8', 'ignore')
+    d = web_url.read().decode('utf-8','ignore')
     d = str(d)
-    return d
-    soup = BeautifulSoup(d, 'html.parser')
+    soup = BeautifulSoup(d,'html.parser')
     listu = []
     bloggy = soup.select('div.s-latency-cf-section')
     for x in bloggy:
@@ -49,14 +48,16 @@ def amaze(url,ext):
             rate = x.select('.aok-align-bottom')[0].text
         except:
             rate = ''
+
         plink=x.select('.s-line-clamp-4')[0].find_all('a')[0]['href']
         link='www.amazon.'+ext+plink
         try:
             g = {'name': name, 'price': price, 'image': img, 'rate': rate,'link':link}
         except:
             g = {}
+
         listu.append(g)
-    #return listu
+    return listu
 
 
 
@@ -115,6 +116,7 @@ def amapi(search):
         di['img'] = x['image']
         di['price'] = x['price_string']
         di['rate'] = x['stars']
+        di['link']=x['url']
         ku.append(di)
     return ku
 
@@ -155,10 +157,9 @@ def home():
         if 'amazon' in baseURL:
             try:
                 gh = amaze(url,ext)
-
                 return jsonify(gh)
             except:
-                '''try:
+                try:
                     hg = amapi(sr)
                     return jsonify(hg)
                 except:
@@ -168,7 +169,7 @@ def home():
 
                            "rate": 'null'}]
 
-                    return jsonify(ku)'''
+                    return jsonify(ku)
 
         elif 'ebay' in baseURL:
             print('****************************************************************************************************************************')
@@ -191,8 +192,8 @@ def home():
 
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+#if __name__ == '__main__':
+    #app.run(debug=True)
 
 
 #if __name__ == "__main__":
