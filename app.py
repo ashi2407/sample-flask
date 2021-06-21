@@ -23,6 +23,7 @@ def amaze(url,ext):
     web_url = urllib.request.urlopen(r)
     d = web_url.read().decode('utf-8', 'ignore')
     d = str(d)
+    return d
     soup = BeautifulSoup(d, 'html.parser')
     listu = []
     bloggy = soup.select('div.s-latency-cf-section')
@@ -55,7 +56,7 @@ def amaze(url,ext):
         except:
             g = {}
         listu.append(g)
-    return listu
+    #return listu
 
 
 
@@ -139,7 +140,7 @@ def home():
                 pg='1'
             global baseURL
             if 'amazon' in id:
-                baseURL = 'http://www.'+id+'.'+ext+'/s?k='+sr+'&page='+pg
+                baseURL = 'https://www.'+id+'.'+ext+'/s?k='+sr+'&page='+pg
             elif 'ebay' in id:
                 baseURL = 'https://www.'+id+'.'+ext+'/sch/i.html?_nkw='+sr+'&page='+pg
 
@@ -154,6 +155,7 @@ def home():
         if 'amazon' in baseURL:
             try:
                 gh = amaze(url,ext)
+
                 return jsonify(gh)
             except:
                 '''try:
@@ -189,8 +191,8 @@ def home():
 
 
 
-#if __name__ == '__main__':
-    #app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
 
 
 #if __name__ == "__main__":
