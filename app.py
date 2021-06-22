@@ -11,7 +11,7 @@ cors = CORS(app)
 
 
 
-# By Deafult Flask will come into this when we run the file
+## By Deafult Flask will come into this when we run the file
 @app.route('/')
 def index():
     return ("index.html")  # Returns index.html file in templates folder.
