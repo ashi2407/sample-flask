@@ -157,8 +157,9 @@ def home():
         if 'amazon' in baseURL:
             try:
                 gh = amaze(url,ext)
+                time.sleep(10)
                 return jsonify(gh)
-                time.sleep(5)
+                
             except Exception as es:
                 try:
                     #hg = amapi(sr)
