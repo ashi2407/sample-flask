@@ -5,7 +5,7 @@ from flask import Flask, render_template, jsonify, request, redirect, url_for
 import os
 from flask_cors import CORS, cross_origin
 import json
-import time
+
 app = Flask(__name__)
 cors = CORS(app)
 
@@ -143,7 +143,7 @@ def home():
                 pg='1'
             global baseURL
             if 'amazon' in id:
-                baseURL = 'https://www.'+id+'.'+ext+'/s?k='+sr+'&page='+pg
+                baseURL = 'https://m.'+id+'.'+ext+'/s?k='+sr+'&page='+pg
             elif 'ebay' in id:
                 baseURL = 'https://www.'+id+'.'+ext+'/sch/i.html?_nkw='+sr+'&page='+pg
 
