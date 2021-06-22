@@ -158,10 +158,11 @@ def home():
             try:
                 gh = amaze(url,ext)
                 return jsonify(gh)
-            except:
+            except Exception as es:
                 try:
-                    hg = amapi(sr)
-                    return jsonify(hg)
+                    #hg = amapi(sr)
+                    #return jsonify(hg)
+                    return str(es)
                 except:
                     ku = [{'name': "null", 'price': "null",
 
