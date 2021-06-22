@@ -25,6 +25,7 @@ def amaze(url,ext):
     d = str(d)
     soup = BeautifulSoup(d,'html.parser')
     listu = []
+    return soup
     bloggy = soup.select('div.s-latency-cf-section')
     for x in bloggy:
         try:
@@ -57,7 +58,7 @@ def amaze(url,ext):
             g = {}
 
         listu.append(g)
-    return listu
+    #return listu
 
 
 
@@ -157,8 +158,8 @@ def home():
         if 'amazon' in baseURL:
             try:
                 gh = amaze(url,ext)
-                time.sleep(10)
-                return jsonify(gh)
+                
+                return str(gh)
                 
             except Exception as es:
                 try:
