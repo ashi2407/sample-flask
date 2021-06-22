@@ -25,7 +25,7 @@ def amaze(url,ext):
     d = str(d)
     soup = BeautifulSoup(d,'html.parser')
     listu = []
-    return soup
+    return str(url+"                 "+d)
     bloggy = soup.select('div.s-latency-cf-section')
     for x in bloggy:
         try:
