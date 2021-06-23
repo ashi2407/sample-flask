@@ -18,7 +18,7 @@ def index():
 
 # After clicking the Submit Button FLASK will come into this
 def amaze(url, ext):
-    r = Request(url,headers={"User-Agent":"Defined"})
+    r = Request(url, headers={"User-Agent":"Defined"})
     web_url = urllib.request.urlopen(r)
     d = web_url.read().decode('utf-8', 'ignore')
     d = str(d)
@@ -65,8 +65,7 @@ def amaze(url, ext):
 
 def ebayed(url, ext):
     try:
-        r = Request(url,
-                    headers={'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1;+http://www.google.com/bot.html)'})
+        r = Request(url,headers={'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1;+http://www.google.com/bot.html)'})
         web_url = urllib.request.urlopen(r)
         d = web_url.read().decode('utf-8', 'ignore')
         d = str(d)
@@ -106,9 +105,9 @@ def ebayed(url, ext):
         return str(es)
 
 
-def amapi(search):
+def amapi(search,ext,pg):
     ku = []
-    url = 'http://api.scraperapi.com/?api_key=06cb789e1afb5ae8df2d0affcd2bfb95&url=https://www.amazon.com/s?k=' + search + '&autoparse=true'
+    url = 'http://api.scraperapi.com/?api_key=06cb789e1afb5ae8df2d0affcd2bfb95&url=https://www.amazon.'+ext+'/s?k=' + search +'&page='+pg +'&autoparse=true'
     req = Request(url, headers={'User-Agent': 'Mozilla/8.0'})
     json_url = urllib.request.urlopen(req)
     d = json_url.read()
@@ -166,7 +165,7 @@ def home():
 
             except Exception as es:
                 try:
-                    hg = amapi(sr)
+                    hg = amapi(sr,ext,pg)
                     return jsonify(hg)
 
                 except:
