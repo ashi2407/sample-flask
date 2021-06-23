@@ -172,8 +172,9 @@ def home():
             except Exception as es:
                 try:
                     hg = amapi(sr,ext,pg)
-                    
-                    return jsonify(hg)
+                    return str(es+hg)
+                
+                    #return jsonify(hg)
                 except Exception as es:
                     
                     return str(es)
