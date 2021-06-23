@@ -168,9 +168,9 @@ def home():
 
             except Exception as es:
                 try:
-                    hg = amapi(sr,ext,pg)
-                    return jsonify(hg)
-
+                    #hg = amapi(sr,ext,pg)
+                    #return jsonify(hg)
+                    return str(es)
                 except:
                     ku = [{'name': "null", 'price': "null",
 
