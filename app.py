@@ -18,7 +18,7 @@ def index():
 
 # After clicking the Submit Button FLASK will come into this
 def amaze(url, ext):
-    r = Request(url, headers={'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1;+http://www.google.com/bot.html)'})
+    r = Request(url,headers={"User-Agent":"Defined"})
     web_url = urllib.request.urlopen(r)
     d = web_url.read().decode('utf-8', 'ignore')
     d = str(d)
