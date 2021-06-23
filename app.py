@@ -10,7 +10,6 @@ app = Flask(__name__)
 cors = CORS(app)
 
 
-
 ## By Deafult Flask will come into this when we run the file
 @app.route('/')
 def index():
@@ -18,18 +17,18 @@ def index():
 
 
 # After clicking the Submit Button FLASK will come into this
-def amaze(url,ext):
-    r = Request(url,headers={'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1;+http://www.google.com/bot.html)'})
+def amaze(url, ext):
+    r = Request(url, headers={'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1;+http://www.google.com/bot.html)'})
     web_url = urllib.request.urlopen(r)
-    d = web_url.read().decode('utf-8','ignore')
+    d = web_url.read().decode('utf-8', 'ignore')
     d = str(d)
-    soup = BeautifulSoup(d,'html.parser')
+    soup = BeautifulSoup(d, 'html.parser')
     listu = []
     bloggy = soup.select('div.s-latency-cf-section')
     for x in bloggy:
         try:
             try:
-                name = x.select('.a-size-base-plus')[0].text+ " "+x.select('.a-size-base-plus')[1].text
+                name = x.select('.a-size-base-plus')[0].text + " " + x.select('.a-size-base-plus')[1].text
             except:
                 name = x.select('.a-size-base-plus')[0].text
         except:
@@ -40,19 +39,23 @@ def amaze(url,ext):
             price = 'N/A'
         try:
             img = x.select('.s-image')[0]['src']
-            img=img.split('UL')
-            img=img[0]+'UL580_.jpg'
+            img = img.split('UL')
+            img = img[0] + 'UL580_.jpg'
         except:
             img = ''
         try:
             rate = x.select('.aok-align-bottom')[0].text
         except:
             rate = ''
-
-        plink=x.select('.s-line-clamp-4')[0].find_all('a')[0]['href']
-        link='www.amazon.'+ext+plink
         try:
-            g = {'name': name, 'price': price, 'image': img, 'rate': rate,'link':link}
+            plink = x.select('.s-line-clamp-4')[0].find_all('a')[0]['href']
+        except:
+            plink = x.select('.s-line-clamp-2')[0].find_all('a')[0]['href']
+
+        link = 'www.amazon.'+ext+plink
+        try:
+            g = {'name': name, 'price': price, 'image': img, 'rate': rate, 'link': link}
+            #, 'link': link
         except:
             g = {}
 
@@ -60,10 +63,10 @@ def amaze(url,ext):
     return listu
 
 
-
-def ebayed(url,ext):
+def ebayed(url, ext):
     try:
-        r = Request(url,headers={'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1;+http://www.google.com/bot.html)'})
+        r = Request(url,
+                    headers={'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1;+http://www.google.com/bot.html)'})
         web_url = urllib.request.urlopen(r)
         d = web_url.read().decode('utf-8', 'ignore')
         d = str(d)
@@ -91,7 +94,7 @@ def ebayed(url,ext):
                 img = ''
             reqlink = x.select('a.s-item__link')[0]['href']
             try:
-                g = {'name': name[0].text, 'price': price, "img":img, "rate": 'null','link':reqlink}
+                g = {'name': name[0].text, 'price': price, "img": img, "rate": 'null', 'link': reqlink}
                 print(g)
             except:
                 g = {}
@@ -116,9 +119,10 @@ def amapi(search):
         di['img'] = x['image']
         di['price'] = x['price_string']
         di['rate'] = x['stars']
-        di['link']=x['url']
+        di['link'] = x['url']
         ku.append(di)
     return ku
+
 
 @app.route('/api/', methods=['GET'])
 @cross_origin()
@@ -126,25 +130,25 @@ def home():
     try:
         if 'web' in request.args:
             id = str(request.args['web'])
-            ext=str(request.args['ext'])
-            id=id.replace(" ",'')
+            ext = str(request.args['ext'])
+            id = id.replace(" ", '')
         else:
             return "Error: No id field provided. Please specify an id."
         if 'search' in request.args:
             sr = str(request.args['search'])
             try:
-                pg=str(request.args['page'])
-                if int(pg)<0:
-                    pg='1'
+                pg = str(request.args['page'])
+                if int(pg) < 0:
+                    pg = '1'
                 else:
                     pass
             except:
-                pg='1'
+                pg = '1'
             global baseURL
             if 'amazon' in id:
-                baseURL = 'https://m.'+id+'.'+ext+'/s?k='+sr+'&page='+pg
+                baseURL = 'https://www.' + id + '.' + ext + '/s?k=' + sr + '&page=' + pg
             elif 'ebay' in id:
-                baseURL = 'https://www.'+id+'.'+ext+'/sch/i.html?_nkw='+sr+'&page='+pg
+                baseURL = 'https://www.' + id + '.' + ext + '/sch/i.html?_nkw=' + sr + '&page=' + pg
 
         else:
             return "Error: No id field provided. Please specify an id."
@@ -159,12 +163,12 @@ def home():
                 gh = amaze(url,ext)
                 
                 return jsonify(gh)
-                
+
             except Exception as es:
                 try:
-                    #hg = amapi(sr)
-                    #return jsonify(hg)
-                    return str(es)
+                    hg = amapi(sr)
+                    return jsonify(hg)
+
                 except:
                     ku = [{'name': "null", 'price': "null",
 
@@ -175,8 +179,8 @@ def home():
                     return jsonify(ku)
 
         elif 'ebay' in baseURL:
-            print('****************************************************************************************************************************')
-            kl=ebayed(url,ext)
+            print('***')
+            kl = ebayed(url, ext)
             print(kl)
             return jsonify(kl)
 
@@ -193,12 +197,10 @@ def home():
         return jsonify(ku)
 
 
-
-
 #if __name__ == '__main__':
     #app.run(debug=True)
 
 
-#if __name__ == "__main__":
-    #port = int(os.environ.get("PORT", 5000))
-    #app.run(host="0.0.0.0", port=port)
+# if __name__ == "__main__":
+# port = int(os.environ.get("PORT", 5000))
+# app.run(host="0.0.0.0", port=port)
